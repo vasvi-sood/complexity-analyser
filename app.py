@@ -16,7 +16,10 @@ def validate_user():
     if request.method == "POST":
         print(request.form['userid'])
         repository_owner = request.form['userid']
-        main(repository_owner)
+        try:
+         main(repository_owner)
+        except requests.exceptions.RequestException as e:
+         return "exception"  
     return render_template('result.html',data=message, title=repository_owner,result=result)
 
 
@@ -243,6 +246,7 @@ def main(repository_owner):
  
  
    while True:
+    print(github_token,repository_owner,page_no)
     repositories=fetch_github_repositories(github_token,repository_owner,page_no)
     for repo in repositories:
        repo_name =repo["name"]
