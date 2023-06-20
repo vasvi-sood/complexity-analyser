@@ -16,10 +16,7 @@ def validate_user():
     if request.method == "POST":
         print(request.form['userid'])
         repository_owner = request.form['userid']
-        try:
-         main(repository_owner)
-        except requests.exceptions.RequestException as e:
-         return "exception"  
+        main(repository_owner)  
     return render_template('result.html',data=message, title=repository_owner,result=result)
 
 
@@ -30,7 +27,7 @@ import openai
 def check_github_username(username):
     url = f"https://api.github.com/users/{username}"
     response = requests.get(url)
-
+    print(response)
     if response.status_code == 200:
         return True
     elif response.status_code == 404:
@@ -41,7 +38,7 @@ def check_github_username(username):
     
 
 def give_reason(key, prompt):
-    openai.api_key = key  # Replace with your OpenAI API key
+    openai.api_key = key  
 
     response = openai.Completion.create(
         engine="text-davinci-003",
@@ -60,9 +57,10 @@ def fetch_github_repositories(access_token,username, page_no):
         "Authorization": f"Bearer {access_token}",
         "Accept": "application/vnd.github.v3+json"
     }
-
+    print("here1")
     try:
         response = requests.get(url, headers=headers)
+        print("here")
         response.raise_for_status()  # Raise an exception for non-successful status codes
         repositories = response.json()
         return repositories
